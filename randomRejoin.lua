@@ -5,7 +5,6 @@ function tp(place,job,plr)
     end) 
     return success;
 end
-
 local randomRejoin;randomRejoin=function()
     local p = game:GetService("Players").LocalPlayer
     local to = Instance.new("TeleportOptions")
@@ -31,19 +30,20 @@ local randomRejoin;randomRejoin=function()
         task.wait(1)
         randomRejoin()
     end)
+    local json;
     if response.Success then
         writefile("baddieWebRequestLoggs.json",response.Body)
-        local json = http:JSONDecode(response.Body)
-        local data = json.data
+        json = http:JSONDecode(response.Body)
+    else
+        json = http:JSONDecode(readfile("baddieWebRequestLoggs.json"))
+    end
+    local data = json.data
+    if #data == 0 then
+        TeleportService:Teleport(game.PlaceId)
+    else
         local id = data[math.ceil(math.random()*#data)].id
         if not tp(game.PlaceId,id , p) then
-            randomRejoin()
-        end
-    else
-        local json = http:JSONDecode(readfile("baddieWebRequestLoggs.json"))
-        local data = json.data
-        local id = data[math.ceil(math.random()*#data)].id
-        if not tp(game.PlaceId,id, p) then
+            task.wait(1)
             randomRejoin()
         end
     end
