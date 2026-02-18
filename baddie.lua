@@ -564,6 +564,7 @@ Section:AddButton({
             })
         end
     })
+--[[
 local Toggle = Section:AddToggle("AutoExecute", {Title = "Auto Execute", Default = true })
 Toggle:OnChanged(function()
     if getgenv().autoExec then getgenv().autoExec:Disconnect(); getgenv().autoExec=nil end
@@ -578,6 +579,7 @@ Toggle:OnChanged(function()
 end)
 
 Options.AutoExecute:SetValue(true)
+]]
 --End Of Real Script
 
 Window:SelectTab(1)
