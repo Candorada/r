@@ -9,6 +9,7 @@ local randomRejoin = loadstring(game:HttpGet(root.."randomRejoin.lua"))()
 game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
     if(c.Name == "ErrorPrompt") then
         queue_on_teleport('loadstring(game:HttpGet("'..root..'baddie.lua"))()')
+        queue_on_teleport('print(\''..'loadstring(game:HttpGet("'..root..'baddie.lua"))()'..'\')')
         randomRejoin()
     end
 end)
