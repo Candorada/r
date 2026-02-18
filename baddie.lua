@@ -51,9 +51,8 @@ local randomRejoin;randomRejoin=function()
     --connect:Disconnect()
     --https://games.roblox.com/v1/games/79305036070450/servers/Public?sortOrder=Desc&limit=100
 end
-
-game.Players.PlayerRemoving: connect (function (plr)
-    if plr == game.Players.LocalPlayer then
+game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
+    if(c.Name == "ErrorPrompt") then
         queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/Candorada/r/refs/heads/main/baddie.lua"))()')
         randomRejoin()
     end
