@@ -2,7 +2,62 @@ if not game:IsLoaded() then game.Loaded:Wait() end
 if game.PlaceId ~= 79305036070450 then return end
 
 local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/main/"
-local randomRejoin = loadstring(game:HttpGet(root.."randomRejoin.lua"))()
+local TeleportService = game:GetService("TeleportService")
+function tp(place,job,plr)
+    local success, errorMessage,rv = pcall(function()
+        return TeleportService:TeleportToPlaceInstance(place, job , plr)
+    end)
+    return success;
+end
+
+getgenv().isTeleporting = getgenv().isTeleporting and true or false
+local randomRejoin;randomRejoin=function()
+    getgenv().isTeleporting = true
+    if(getgenv().isTeleporting and not game:IsLoaded()) then return end 
+    local p = game:GetService("Players").LocalPlayer
+    local to = Instance.new("TeleportOptions")
+
+    local http = game:GetService("HttpService")
+    local headers = {
+        ["Content-Type"] = "application/json"
+    }
+    local data = {
+        ["content"] = message
+    }
+    local body = http:JSONEncode(data)
+    local url = "https://games.roblox.com/v1/games/"..tostring(game.PlaceId).."/servers/Public?sortOrder=Asc&limit=100"
+    local response = request({
+        Url = url,
+        Method = "GET",
+        Headers = headers,
+        Body = body
+    })
+    local connect;
+    connect = TeleportService.TeleportInitFailed:Connect(function(player, result, errorMessage, placeId, jobId)
+        getgenv().isTeleporting = false
+        connect:Disconnect()
+        task.wait(1)
+        randomRejoin()
+    end)
+    local json;
+    if response.Success then
+        writefile("baddieWebRequestLoggs.json",response.Body)
+        json = http:JSONDecode(response.Body)
+    else
+        json = http:JSONDecode(readfile("baddieWebRequestLoggs.json"))
+    end
+    local data = json.data
+    if #data == 0 then
+        TeleportService:Teleport(game.PlaceId)
+    else
+        local id = data[math.ceil(math.random()*#data)].id
+        if not tp(game.PlaceId,id , p) then
+            randomRejoin()
+        end
+    end
+    --connect:Disconnect()
+    --https://games.roblox.com/v1/games/79305036070450/servers/Public?sortOrder=Desc&limit=100
+end
 local Fluent, SaveManager, InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/discoart/FluentPlus/refs/heads/main/release.lua"))()
 --https://forgenet.gitbook.io/fluent-documentation/documentation/documentation/fluent
 getgenv().loadedBaddieScript = false
@@ -563,14 +618,16 @@ Section:AddButton({
         end
     })
 ----[[
-local Toggle = Section:AddToggle("AutoExecute", {Title = "Auto Execute", Default = true })
 if getgenv().antiKick then getgenv().antiKick:Disconnect(); getgenv().antiKick=nil end
 getgenv().antiKick = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
-    if(c.Name == "ErrorPrompt") then
+    if(c.Name == "ErrorPrompt" and not getgenv().isTeleporting) then
         getgenv().antiKick:Disconnect(); getgenv().antiKick=nil
         randomRejoin()
     end
 end)
+
+
+local Toggle = Section:AddToggle("AutoExecute", {Title = "Auto Execute", Default = true })
 Toggle:OnChanged(function()
     if getgenv().autoExec then getgenv().autoExec:Disconnect(); getgenv().autoExec=nil end
     if Options.AutoExecute.Value then
