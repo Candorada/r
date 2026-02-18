@@ -3,11 +3,14 @@ function tp(place,job,plr)
     local success, errorMessage,rv = pcall(function()
         return TeleportService:TeleportToPlaceInstance(place, job , plr)
     end) 
+    getgenv().isTeleporting = false
     return success;
 end
 
-
+getgenv().isTeleporting = getgenv().isTeleporting and true or false
 local randomRejoin;randomRejoin=function()
+    getgenv().isTeleporting = true
+    if(getgenv().isTeleporting and not game:IsLoaded()) then return end 
     local p = game:GetService("Players").LocalPlayer
     local to = Instance.new("TeleportOptions")
 
@@ -52,4 +55,4 @@ local randomRejoin;randomRejoin=function()
     --https://games.roblox.com/v1/games/79305036070450/servers/Public?sortOrder=Desc&limit=100
 end
 
-return randomRejoin
+randomRejoin()
