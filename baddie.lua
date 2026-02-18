@@ -1,6 +1,5 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 if game.PlaceId ~= 79305036070450 then return end
-while game:GetService("Players").LocalPlayer == nil do task.wait() end --prevents execute failure on :GetMouse()
 
 
 local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/main/"
