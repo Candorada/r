@@ -572,7 +572,7 @@ Toggle:OnChanged(function()
     if Options.AutoExecute.Value then
         getgenv().autoExecute = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
             queue_on_teleport('loadstring(game:HttpGet("'..root..'baddie.lua"))()')            
-        end
+        end)
 
         getgenv().antiKick = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
             if(c.Name == "ErrorPrompt") then
