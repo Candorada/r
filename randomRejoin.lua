@@ -1,3 +1,11 @@
+local TeleportService = game:GetService("TeleportService")
+function tp(place,job,plr)
+    local success, errorMessage,rv = pcall(function()
+        return TeleportService:TeleportToPlaceInstance(place, job , plr)
+    end) 
+    return success;
+end
+
 local randomRejoin;randomRejoin=function()
     local p = game:GetService("Players").LocalPlayer
     local to = Instance.new("TeleportOptions")
