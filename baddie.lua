@@ -67,7 +67,9 @@ getgenv().antiKick = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Conne
     end
 end)
 local http = game:GetService("HttpService") --just using this because httpGet Is Bullying me
-local Fluent, SaveManager, InterfaceManager = loadstring(request({Url="https://raw.githubusercontent.com/discoart/FluentPlus/refs/heads/main/release.lua"}).Body)()
+local data = request({Url="https://raw.githubusercontent.com/discoart/FluentPlus/refs/heads/main/release.lua"}).Body
+print(typeof(data))
+local Fluent, SaveManager, InterfaceManager = loadstring(data)()
 --https://forgenet.gitbook.io/fluent-documentation/documentation/documentation/fluent
 getgenv().loadedBaddieScript = false
 getgenv().pauseAutoRejoin = false
