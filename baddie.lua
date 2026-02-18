@@ -58,4 +58,3 @@ game.Players.PlayerRemoving: connect (function (plr)
         queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/Candorada/r/refs/heads/main/baddie.lua"))()')
     end
 end)
-
