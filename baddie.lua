@@ -9,7 +9,6 @@ if getgenv().autoExec then getgenv().autoExec:Disconnect(); getgenv().autoExec=n
 getgenv().autoExec = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
     if(c.Name == "ErrorPrompt") then
         queue_on_teleport('loadstring(game:HttpGet("'..root..'baddie.lua"))()')
-        queue_on_teleport('print(\''..'loadstring(game:HttpGet("'..root..'baddie.lua"))()'..'\')')
         randomRejoin()
     end
 end)
