@@ -564,14 +564,18 @@ Section:AddButton({
             })
         end
     })
---[[
+----[[
 local Toggle = Section:AddToggle("AutoExecute", {Title = "Auto Execute", Default = true })
 Toggle:OnChanged(function()
     if getgenv().autoExec then getgenv().autoExec:Disconnect(); getgenv().autoExec=nil end
+    if getgenv().antiKick then getgenv().antiKick:Disconnect(); getgenv().antiKick=nil end
     if Options.AutoExecute.Value then
-        getgenv().autoExec = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
+        getgenv().autoExecute = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
+            queue_on_teleport('loadstring(game:HttpGet("'..root..'baddie.lua"))()')            
+        end
+
+        getgenv().antiKick = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
             if(c.Name == "ErrorPrompt") then
-                queue_on_teleport('loadstring(game:HttpGet("'..root..'baddie.lua"))()')
                 randomRejoin()
             end
         end)
@@ -579,7 +583,7 @@ Toggle:OnChanged(function()
 end)
 
 Options.AutoExecute:SetValue(true)
-]]
+--]]
 --End Of Real Script
 
 Window:SelectTab(1)
