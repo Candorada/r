@@ -54,7 +54,7 @@ end
 
 game.Players.PlayerRemoving: connect (function (plr)
     if plr == game.Players.LocalPlayer then
-        randomRejoin()
         queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/Candorada/r/refs/heads/main/baddie.lua"))()')
+        randomRejoin()
     end
 end)
