@@ -5,8 +5,8 @@ while game:GetService("Players").LocalPlayer == nil do task.wait() end --prevent
 
 local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/main/"
 local randomRejoin = loadstring(game:HttpGet(root.."randomRejoin.lua"))()
-
-game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
+if getgenv().autoExec then getgenv().autoExec:Disconnect(); getgenv().autoExec=nil end
+getgenv().autoExec = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
     if(c.Name == "ErrorPrompt") then
         queue_on_teleport('loadstring(game:HttpGet("'..root..'baddie.lua"))()')
         queue_on_teleport('print(\''..'loadstring(game:HttpGet("'..root..'baddie.lua"))()'..'\')')
