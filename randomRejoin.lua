@@ -55,4 +55,4 @@ local randomRejoin;randomRejoin=function()
     --https://games.roblox.com/v1/games/79305036070450/servers/Public?sortOrder=Desc&limit=100
 end
 
-randomRejoin()
+return randomRejoin
