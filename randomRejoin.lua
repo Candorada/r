@@ -618,14 +618,16 @@ Section:AddButton({
         end
     })
 ----[[
-local Toggle = Section:AddToggle("AutoExecute", {Title = "Auto Execute", Default = true })
 if getgenv().antiKick then getgenv().antiKick:Disconnect(); getgenv().antiKick=nil end
 getgenv().antiKick = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
-    if(c.Name == "ErrorPrompt") then
+    if(c.Name == "ErrorPrompt" and not getgenv().isTeleporting) then
         getgenv().antiKick:Disconnect(); getgenv().antiKick=nil
         randomRejoin()
     end
 end)
+
+
+local Toggle = Section:AddToggle("AutoExecute", {Title = "Auto Execute", Default = true })
 Toggle:OnChanged(function()
     if getgenv().autoExec then getgenv().autoExec:Disconnect(); getgenv().autoExec=nil end
     if Options.AutoExecute.Value then
