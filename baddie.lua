@@ -637,7 +637,11 @@ Toggle:OnChanged(function()
     if Options.AutoExecute.Value then
         getgenv().autoExec = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
             getgenv().autoExec:Disconnect()
-            queue_on_teleport('loadstring(game:HttpGet("'..root..'baddie.lua"))()')            
+            queue_on_teleport(
+                "if not game:IsLoaded() then game.Loaded:Wait() end;"..
+                "if game.PlaceId ~= 79305036070450 then return end;"..
+                'loadstring(game:HttpGet("'..root..'baddie.lua"))()'
+            )            
         end)
     end
 end)
