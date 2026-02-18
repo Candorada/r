@@ -5,13 +5,6 @@ while game:GetService("Players").LocalPlayer == nil do task.wait() end --prevent
 
 local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/main/"
 local randomRejoin = loadstring(game:HttpGet(root.."randomRejoin.lua"))()
-if getgenv().autoExec then getgenv().autoExec:Disconnect(); getgenv().autoExec=nil end
-getgenv().autoExec = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
-    if(c.Name == "ErrorPrompt") then
-        queue_on_teleport('loadstring(game:HttpGet("'..root..'baddie.lua"))()')
-        randomRejoin()
-    end
-end)
 
 local Fluent, SaveManager, InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/discoart/FluentPlus/refs/heads/main/release.lua"))()
 --https://forgenet.gitbook.io/fluent-documentation/documentation/documentation/fluent
@@ -558,7 +551,7 @@ Options.AutoBuy:SetValue(false)
 
 
 
-local Section = Tabs.Main:AddSection("Support (Not Maintained)", "message-circle") -- Create section with icon
+local Section = Tabs.Main:AddSection("General", "message-circle") -- Create section with icon
 Section:AddButton({
         Title = "Discord Link",
         Description = "Coppys Discord Link To Clipboard",
@@ -572,7 +565,20 @@ Section:AddButton({
             })
         end
     })
+local Toggle = Section:AddToggle("AutoExecute", {Title = "Auto Execute", Default = true })
+Toggle:OnChanged(function()
+    if getgenv().autoExec then getgenv().autoExec:Disconnect(); getgenv().autoExec=nil end
+    if Options.AutoExecute.Value then
+        getgenv().autoExec = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
+            if(c.Name == "ErrorPrompt") then
+                queue_on_teleport('loadstring(game:HttpGet("'..root..'baddie.lua"))()')
+                randomRejoin()
+            end
+        end)
+    end
+end)
 
+Options.AutoExecute:SetValue(true)
 --End Of Real Script
 
 Window:SelectTab(1)
