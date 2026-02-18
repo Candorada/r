@@ -12,8 +12,8 @@ end
 
 getgenv().isTeleporting = getgenv().isTeleporting and true or false
 local randomRejoin;randomRejoin=function()
+    if(getgenv().isTeleporting) then return end 
     getgenv().isTeleporting = true
-    if(getgenv().isTeleporting and not game:IsLoaded()) then return end 
     local p = game:GetService("Players").LocalPlayer
     local to = Instance.new("TeleportOptions")
 
@@ -58,6 +58,15 @@ local randomRejoin;randomRejoin=function()
     --connect:Disconnect()
     --https://games.roblox.com/v1/games/79305036070450/servers/Public?sortOrder=Desc&limit=100
 end
+
+if getgenv().antiKick then getgenv().antiKick:Disconnect(); getgenv().antiKick=nil end
+getgenv().antiKick = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
+    if(c.Name == "ErrorPrompt" and not getgenv().isTeleporting) then
+        getgenv().antiKick:Disconnect(); getgenv().antiKick=nil
+        randomRejoin()
+    end
+end)
+
 local Fluent, SaveManager, InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/discoart/FluentPlus/refs/heads/main/release.lua"))()
 --https://forgenet.gitbook.io/fluent-documentation/documentation/documentation/fluent
 getgenv().loadedBaddieScript = false
@@ -618,13 +627,6 @@ Section:AddButton({
         end
     })
 ----[[
-if getgenv().antiKick then getgenv().antiKick:Disconnect(); getgenv().antiKick=nil end
-getgenv().antiKick = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
-    if(c.Name == "ErrorPrompt" and not getgenv().isTeleporting) then
-        getgenv().antiKick:Disconnect(); getgenv().antiKick=nil
-        randomRejoin()
-    end
-end)
 
 
 local Toggle = Section:AddToggle("AutoExecute", {Title = "Auto Execute", Default = true })
