@@ -1,5 +1,4 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
-if game:GetService("Players").LocalPlayer.UserId ~= 1525417949 then return end
 if game.PlaceId ~= 79305036070450 then return end
 
 local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/main/"
