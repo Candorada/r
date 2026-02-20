@@ -1,4 +1,5 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
+if game:GetService("Players").LocalPlayer.UserId ~= 1525417949 then return end
 if game.PlaceId ~= 79305036070450 then return end
 
 local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/main/"
@@ -68,7 +69,6 @@ getgenv().antiKick = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Conne
 end)
 local http = game:GetService("HttpService") --just using this because httpGet Is Bullying me
 local data = request({Url="https://raw.githubusercontent.com/discoart/FluentPlus/refs/heads/main/release.lua"}).Body
-print(typeof(data))
 local Fluent, SaveManager, InterfaceManager = loadstring(data)()
 --https://forgenet.gitbook.io/fluent-documentation/documentation/documentation/fluent
 getgenv().loadedBaddieScript = false
@@ -348,7 +348,7 @@ local Slider = Section:AddSlider("FlySpeed", {
 	Max = 1000,
 	Rounding = 1,
 	Callback = function(Value)
-		print("Slider was changed:", Value)
+		--print("Slider was changed:", Value)
 	end
 })
 Options.FlySpeed:SetValue(16*0.745) --this line would load the configs value
@@ -612,6 +612,128 @@ end)
 
 Options.AutoBuy:SetValue(false)
 
+------SELLING VARIABLES & FUNCTIONS
+    local stuff = {
+
+    }
+    repeat task.wait() until game:GetService("Players").LocalPlayer
+    local mutations = require(game:GetService("ReplicatedStorage").Modules.Mutations)
+    local baddieData = require(game:GetService("ReplicatedStorage").Modules.BaddieData)
+
+    for name,data in pairs(baddieData) do
+        for mName, mData in pairs(mutations) do
+            table.insert(stuff, {
+                ["name"] = "["..mName.."] "..data.Rarity.." "..name,
+                ["color"] = mData.Color,
+                ["cps"] = data.BaseCash*mData.CoinMultiplier,
+                ["baddie"] = name,
+                ["mutation"] = mName
+            })
+        end
+        table.insert(stuff, {
+            ["name"] = "[Normal] "..data.Rarity.." "..name,
+            ["color"] = ColorSequence.new(Color3.new(1,1,1)),
+            ["cps"] = data.BaseCash,
+            ["baddie"] = name,
+            ["mutation"] = "Normal"
+        })
+    end
+
+    function findClosest(n)
+        local higher = 0
+        local hb = nil
+        local lower = 0
+        local lb = nil
+        for i,v in pairs(stuff) do
+            --print(v.cps)
+            if (v.cps >= n) then
+                if higher>=v.cps or hb == nil then
+                    higher = v.cps
+                    hb = v
+                end
+            else
+                if lower<=v.cps or lb == nil then
+                    lower = v.cps
+                    lb = v
+                end
+            end
+        end
+        
+        local retval = hb ==nil and lb or (lb==nil and hb or (math.abs(higher-n)<=math.abs(lower-n) and hb or lb))
+        if retval.cps == n then
+            return retval,"&lt;="
+        --elseif retval.cps >n then
+        --    return retval,"<"
+        else
+            return retval,"&lt;"
+        end
+    end--finds baddie closest to certain number
+
+    function uthenasia(id,baddie,threshold)
+        if Options.sellThreshold and Options.AutoSell and (tonumber(Options.sellThreshold.Value) ~= tonumber(threshold) or not Options.AutoSell.Value) then
+            return false
+        end
+        threshold = tonumber(threshold)
+        local mutatonMult = 1
+        table.foreach(baddie.m, function(_,n) if mutations[n] then mutatonMult *= mutations[n].CoinMultiplier end end)
+        local earnings = mutatonMult*baddieData[baddie.n].BaseCash
+        if earnings < threshold then
+            local rs = game:GetService("ReplicatedStorage")
+            rs.Events.equip:InvokeServer(id, true)
+            rs.Events.sell:InvokeServer("specific")
+            return true
+        end
+        return false
+    end
+
+    function deleteAllBaddies(threshold)
+        threshold = tonumber(threshold)
+        local s = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("RestockScript")
+        local senv = getsenv(s)
+        repeat task.wait() until senv._G.Profile
+        local profile = senv._G.Profile
+        local sellcount = 0
+        for id,data in pairs(profile.Data.inv.unique) do
+            --print("----"..id.."---- "..table.concat(data.m," ").." ".. data.n)
+            if(Options.sellThreshold and Options.AutoSell and (tonumber(Options.sellThreshold.Value) ~= threshold or not Options.AutoSell.Value)) then
+                return sellcount
+            end
+            uthenasia(id,data,threshold)
+            sellcount = sellcount+1
+        end
+        return sellcount
+    end
+--- END OF SELLIGN VARS AND FUNCS
+local autoSell = Tabs.Main:AddSection("Auto Sell Baddies", "list-x")
+local smallest = findClosest(0)
+local biggest = findClosest(math.huge)
+local slider
+slider = autoSell:AddSlider("sellThreshold", {
+    Title = "Baddie Sell Threshold",
+    Description = "if baddie Cash / S <= \nthen it will be sold",
+    Default = smallest.cps,
+    Min = smallest.cps,
+    Max = biggest.cps,
+    Rounding = 2,
+    Callback = function(Value)
+        if Options.sellThreshold then
+            local closest,direction = findClosest(tonumber(Value))
+            slider.Elements:SetDesc("if Cash / S "..direction.." "..numberToString(Value))
+            autoSell.Container.Parent.Frame.TextLabel.Text = "AutoSell "..direction..GradientFromColorSequence(closest.name, closest.color)
+            if Options.AutoSell and Options.AutoSell.Value then
+                task.spawn(deleteAllBaddies,tonumber(Options.sellThreshold.Value))
+            end
+        end
+    end
+})
+slider:SetValue(smallest.cps)
+
+local Toggle = autoSell:AddToggle("AutoSell", {Title = "Auto Sell", Default = false })
+Toggle:OnChanged(function(value)
+    if value then
+    task.spawn(deleteAllBaddies,tonumber(Options.sellThreshold.Value))    
+    end
+end)
 
 
 local Section = Tabs.Main:AddSection("General", "message-circle") -- Create section with icon
@@ -712,16 +834,56 @@ if Options.AutoFind.Value and nullityExists() then
 end
 
 end)
+--AUTO SELL SECTION OF CODE
 function spin()
     local result = game:GetService("Players").LocalPlayer.PlayerGui.Main.Dice.RollState:InvokeServer()
+    if result.autoSold then warn("You sold A "..result.mutation.." "..result.outcome) end
+--[[
     if(result ~=nil and result.success) then
-        if not result.autoSold then
+        local sellcount = 0;
+        if(Options.AutoSell.Value) then
+            sellcount = deleteAllBaddies(Options.sellThreshold.Value);
+        end
+        if not result.autoSold and sellcount == 0 then
             print("You spun A "..result.mutation.." "..result.outcome)
         else
             warn("You sold A "..result.mutation.." "..result.outcome)
         end
-    end
+    end        
+]] --commented out because i added listen to baddie open
 end
+--listening to baddieOpen
+    local s2 = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("RestockScript")
+    local s = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("Dice"):WaitForChild("DiceManager")
+    local senv = getsenv(s)
+    repeat task.wait() until senv._G.Profile
+    local p = senv._G.Profile
+    getgenv().invChange = function(...)
+        local a,b = ...
+        a=a.unique
+        b=b.unique
+        local id,data = nil
+        for i,v in pairs(a) do
+            if(b[i]==nil) then
+            id = i;data=v
+            end
+        end
+        if id then
+            if Options.sellThreshold and Options.AutoSell and Options.AutoSell.Value and uthenasia(id,data,Options.sellThreshold.Value) then
+                warn("You sold A "..table.concat(data.m," ").." "..data.n)
+            else
+                print("You rolled A "..table.concat(data.m," ").." "..data.n)
+            end
+        end
+    end
+    getgenv().isListening = getgenv().isListening and true or false
+    if(not getgenv().isListening) then
+        getgenv().isListening = true
+        p:ListenToChange("inv",function(...)
+            getgenv().invChange(...)
+        end)
+    end
+--
 if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] then
     getgenv().pauseAutoRejoin = true
     SaveManager:Save(SaveManager.Options.SaveManager_ConfigList.Value)
