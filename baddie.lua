@@ -761,7 +761,8 @@ Toggle:OnChanged(function()
             queue_on_teleport(
                 "if not game:IsLoaded() then game.Loaded:Wait() end;"..
                 "if game.PlaceId ~= 79305036070450 then return end;"..
-                'loadstring(game:HttpGet("'..root..'baddie.lua"))()'
+                'local get =nil; repeat get = game:HttpGet("'..root..'baddie.lua") until typeof(get) =="string"'..
+                'loadstring(get)()'
             )            
         end)
     end
