@@ -375,8 +375,8 @@ Options.FlyKeyBind:SetValue("None", "Toggle")
 -- [[[[[[[[[[Nullity]]]]]]]]]]
 
 
-local Section = Tabs.Main:AddSection("Nullity", "shopping-bag") -- Create section with icon
-local Toggle = Section:AddToggle("AutoFind", {Title = "Nullity Spam Rejoin",Description = "Create a Config in settings to make this work", Default = false })
+local DiceMngmnt = Tabs.Main:AddSection("Dice Management", "shopping-bag") -- Create section with icon
+local Toggle = DiceMngmnt:AddToggle("AutoFind", {Title = "Nullity Spam Rejoin",Description = "Create a Config in settings to make this work", Default = false })
 
 Toggle:OnChanged(function()
     local list = SaveManager.Options.SaveManager_ConfigList
@@ -593,8 +593,7 @@ Toggle:OnChanged(function()
 end)
 Options.AutoWeather:SetValue(false)
 
-local Shop = Tabs.Main:AddSection("Shop", "shopping-cart")
-local tgl = Shop:AddToggle("AutoBuy", {Title = "Auto Buy All Dice", Default = false })
+local tgl = DiceMngmnt:AddToggle("AutoBuy", {Title = "Auto Buy All Dice", Default = false })
 if(getgenv().buyallconnection) then getgenv().buyallconnection:Disconnect();getgenv().buyallconnection =nil end
 getgenv().buyallconnection=game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("top_not"):WaitForChild("Frame").ChildAdded:Connect(function()
 if Options.AutoBuy.Value then
@@ -702,6 +701,15 @@ Options.AutoBuy:SetValue(false)
         end
         return sellcount
     end
+
+
+local tgl = DiceMngmnt:AddToggle("AutoEquippedBest", {Title = "Auto Equipped Best", Default = false })
+tgl:OnChanged(function(value)
+    if value and getgenv().equippedChange then
+        getgenv().equippedChange()
+    end
+end)
+tgl:SetValue(false)
 --- END OF SELLIGN VARS AND FUNCS
 local autoSell = Tabs.Main:AddSection("Auto Sell Baddies", "list-x")
 local smallest = findClosest(0)
@@ -852,9 +860,10 @@ function spin()
     end        
 ]] --commented out because i added listen to baddie open
 end
---listening to baddieOpen
-    local s2 = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("RestockScript")
+--listening to baddieOpen & dicen change
+    --local s2 = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("RestockScript")
     local s = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("Dice"):WaitForChild("DiceManager")
+    local m = require(game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("DiceData"))
     local senv = getsenv(s)
     repeat task.wait() until senv._G.Profile
     local p = senv._G.Profile
@@ -882,6 +891,33 @@ end
         p:ListenToChange("inv",function(...)
             getgenv().invChange(...)
         end)
+    end
+    getgenv().equippedChange = function(...)
+        if Options.AutoEquippedBest.Value == false then return end 
+        --local newDice = ...
+        local bestDice = nil
+        table.foreach(senv._G.Profile.Data.dices, function(i,v)
+            if (v <= 0) or m == nil then return end
+            if bestDice == nil or bestDice.dice.Layout_Order <=m[i].Layout_Order then
+                bestDice = {["name"]=i,["dice"]=m[i]}
+            end
+        end)
+        if bestDice == nil or p.Data.equipped == bestDice.name then return end
+        game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("updateRollingDice"):FireServer(bestDice.name)
+        task.spawn(function() pcall(senv.updateDiceUI,bestDice.name) end)
+    end
+    getgenv().isListeningEquipped = getgenv().isListeningEquipped and true or false
+    if(not getgenv().isListeningEquipped) then
+        getgenv().isListeningEquipped = true
+        p:ListenToChange("equipped",function(...)
+            getgenv().equippedChange(...)
+        end)
+        ----[[
+
+        p:ListenToArraySet("dices",function(...) --ListenToArraySet
+            getgenv().equippedChange(...)
+        end)
+        --]]
     end
 --
 if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] then
