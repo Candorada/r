@@ -751,7 +751,7 @@ Section:AddButton({
             setclipboard("https://discord.gg/2kYFMMn8")
             Fluent:Notify({
                 Title = "Coppied Discord To Clipboard",
-                Content = "https://discord.gg/eXqG92HG",
+                Content = "https://discord.gg/2kYFMMn8",
                 SubContent = "Link May Be Invalid",
                 Duration = 5 -- Set to nil to make the notification not disappear
             })
