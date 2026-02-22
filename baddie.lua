@@ -1,7 +1,7 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 if game.PlaceId ~= 79305036070450 then return end
 
-local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/index/"
+local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/indev/"
 local TeleportService = game:GetService("TeleportService")
 function tp(place,job,plr)
     local success, errorMessage,rv = pcall(function()
