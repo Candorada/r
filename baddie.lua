@@ -1,7 +1,7 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 if game.PlaceId ~= 79305036070450 then return end
 
-local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/main/"
+local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/index/"
 local TeleportService = game:GetService("TeleportService")
 function tp(place,job,plr)
     local success, errorMessage,rv = pcall(function()
@@ -21,7 +21,7 @@ local randomRejoin;randomRejoin=function()
     local headers = {
         ["Content-Type"] = "application/json"
     }
-    local data = {
+    local data = { 
         ["content"] = message
     }
     local body = http:JSONEncode(data)
@@ -527,9 +527,12 @@ function setWeatherName()
     end
 end
 setWeatherName()
-getgenv().wcCon = wc.AttributeChanged:Connect(function()
+getgenv().wcCon = wc.AttributeChanged:Connect(function(...)
+
     setWeatherName()
-    if(getgenv().pauseAutoRejoin and Options.AutoWeather.Value) then
+    if getgenv().pauseAutoRejoin and Options.AutoWeather.Value then
+        if (nullityExists() and Options.AutoFind.Value) then return end
+        if getWeather() ~= nil and Options.Events.Value[getWeather()] then return end 
         getgenv().pauseAutoRejoin = false
     end
 end)
@@ -920,7 +923,7 @@ end
         --]]
     end
 --
-if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] then
+if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()]  then
     getgenv().pauseAutoRejoin = true
     SaveManager:Save(SaveManager.Options.SaveManager_ConfigList.Value)
     Fluent:Notify({
