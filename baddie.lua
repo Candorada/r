@@ -830,7 +830,7 @@ if Options.AutoFind.Value and nullityExists() then
     while not game:GetService("Players").LocalPlayer.PlayerGui.Main.MerchantShop.Visible and task.wait() and nullityExists() and Options.AutoFind.Value do
         fireproximityprompt(nullityRoot.ProximityPrompt) --caused initial crash, if future cash becomes issue reffer to here
     end
-    task.wait(2)
+    task.wait(2) --likely optional
     for i2=1, 15, 1 do
         for i=1, 3, 1 do
             if(nullityExists()) then
@@ -839,8 +839,8 @@ if Options.AutoFind.Value and nullityExists() then
             end
         end
     end
-    frame.Visible = true
-    task.wait(3)
+    if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] then return end
+    task.wait(3) --likely optional
     getgenv().pauseAutoRejoin = false
 end
 
