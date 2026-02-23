@@ -620,13 +620,21 @@ function onNullityFound()
             wares = getWares()
             if wares.wares then table.foreach(wares.wares, function(i,v) print("ware #"..tostring(i).." "..v.Name.." "..tostring(v.Stock).."x") end) end
         end
-        local totalwares = 0
-        for i,v in pairs(wares.wares) do
-            for i2=1, v.Stock, 1 do
-                totalwares = totalwares+1
-                game:GetService("ReplicatedStorage").Events.MerchantBuy:InvokeServer(i)
+        function buywares()
+            if nullityExists() == false then return 0 end
+            if wares.wares ~= nil then
+                local totalwares = 0
+                for i,v in pairs(wares.wares) do
+                    for i2=1, v.Stock, 1 do
+                        totalwares = totalwares+1
+                        game:GetService("ReplicatedStorage").Events.MerchantBuy:InvokeServer(i)
+                    end
+                end
+                return totalwares
             end
+            wares = getWares()
         end
+        while buywares() != 0 and task.wait() do end
         print(totalwares == 0 and "it was sold out" or "bought some stuff")
         if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] then return end
         task.wait(1)--for asthetic reasons, you cannot tell that everythint was purchased
