@@ -622,7 +622,7 @@ getgenv().wcCon = wc.AttributeChanged:Connect(function(...)
     local nOver = false
     local wOver = false
     if getgenv().pauseAutoRejoin then
-        if Options.AutoFind.Value and (nullityExists() and Options.AutoFind.Value) and not getgenv().nullityFound then 
+        if Options.AutoFind.Value and nullityExists() and not getgenv().nullityFound then 
             getgenv().nullityFound = true
             onNullityFound()
         else
