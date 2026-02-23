@@ -589,8 +589,10 @@ function onNullityFound()
         })
         local plrGUI = game:GetService("Players").LocalPlayer.PlayerGui
         --local btn = plrGUI:WaitForChild("loading"):WaitForChild("Frame"):WaitForChild("skipbutton")
-        local frame = plrGUI:WaitForChild("loading"):WaitForChild("Frame")
-        frame.BackgroundTransparency = 1
+        if plrGUI~=nil and plrGUI.loading~=nil then
+            	local frame = plrGUI:WaitForChild("loading"):WaitForChild("Frame")
+                frame.BackgroundTransparency = 1
+        end
         local nullityRoot = workspace.Nullity.Nullity:WaitForChild("HumanoidRootPart")
         local char = game:GetService("Players").LocalPlayer.Character
         local humanoid = char.Humanoid
