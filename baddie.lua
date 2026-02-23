@@ -892,10 +892,10 @@ Section:AddButton({
         Title = "Discord Link",
         Description = "Coppys Discord Link To Clipboard",
         Callback = function()
-            setclipboard("https://discord.gg/2kYFMMn8")
+            setclipboard("https://discord.gg/JXq5A4K8")
             Fluent:Notify({
                 Title = "Coppied Discord To Clipboard",
-                Content = "https://discord.gg/2kYFMMn8",
+                Content = "https://discord.gg/JXq5A4K8",
                 SubContent = "Link May Be Invalid",
                 Duration = 5 -- Set to nil to make the notification not disappear
             })
