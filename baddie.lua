@@ -600,17 +600,21 @@ function onNullityFound()
             humanoid.RootPart.Anchored = false
             task.wait()
         until not humanoid.RootPart.Anchored
-        
+        --[[
         game:GetService("Players").LocalPlayer.Character.Humanoid:MoveTo(pos)
         setConveyer(false)
         humanoid.MoveToFinished:Wait()
         setConveyer(true)
         task.wait(0.1)
-        
+        --]]
         while humanoid.RootPart.Anchored and task.wait()  do
             humanoid.RootPart.Anchored = false
         end -- repeat because idk why
         local cf = humanoid.RootPart.CFrame
+        while (humanoid.RootPart.Position).Magnitude > 0.1 and task.wait() do
+            humanoid.RootPart.Anchored = false
+            humanoid.RootPart.CFrame = CFrame.new(pos)
+        end
         local mq = game:GetService("ReplicatedStorage").Events.MerchantRequest
         function getWares() return mq:InvokeServer() end
         local wares = getWares()
