@@ -1,3 +1,6 @@
+repeat
+    task.wait()
+until game.IsLoaded ~= nil
 if not game:IsLoaded() then game.Loaded:Wait() end
 if game.PlaceId ~= 79305036070450 then return end
 
