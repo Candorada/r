@@ -627,6 +627,7 @@ function onNullityFound()
                 local totalwares = 0
                 for i,v in pairs(wares.wares) do
                     for i2=1, v.Stock, 1 do
+                        if Options.AutoBuy.Value ==false then return 0 end
                         totalwares = totalwares+1
                         game:GetService("ReplicatedStorage").Events.MerchantBuy:InvokeServer(i)
                     end
