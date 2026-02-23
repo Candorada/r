@@ -1,7 +1,6 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 if game.PlaceId ~= 79305036070450 then return end
 
-
 local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/indev/"
 local TeleportService = game:GetService("TeleportService")
 function tp(place,job,plr)
@@ -10,7 +9,7 @@ function tp(place,job,plr)
     end)
     return success;
 end
-function sendMessage(url, message) --for future use, currently not used
+function sendMessage(url, message)
     local http = game:GetService("HttpService")
     local headers = {
         ["Content-Type"] = "application/json"
@@ -596,43 +595,41 @@ function onNullityFound()
         local char = game:GetService("Players").LocalPlayer.Character
         local humanoid = char.Humanoid
         local pos = nullityRoot.Position
-        repeat 
+        while humanoid.RootPart.Anchored and task.wait()  do
             humanoid.RootPart.Anchored = false
-            task.wait()
-        until not humanoid.RootPart.Anchored
+        end
         --[[
         game:GetService("Players").LocalPlayer.Character.Humanoid:MoveTo(pos)
         setConveyer(false)
         humanoid.MoveToFinished:Wait()
         setConveyer(true)
-        task.wait(0.1)
-        --]]
+        --]] 
+        task.wait(0.1) --lil wait so that i can wait for me to get re-anchored apparently idk
         while humanoid.RootPart.Anchored and task.wait()  do
             humanoid.RootPart.Anchored = false
         end -- repeat because idk why
-        local cf = humanoid.RootPart.CFrame
-        while (humanoid.RootPart.Position).Magnitude > 0.1 and task.wait() do
+        while (humanoid.RootPart.Position-pos).Magnitude > 0.1 and task.wait() do
             humanoid.RootPart.Anchored = false
             humanoid.RootPart.CFrame = CFrame.new(pos)
         end
         local mq = game:GetService("ReplicatedStorage").Events.MerchantRequest
         function getWares() return mq:InvokeServer() end
         local wares = getWares()
-        while not game:GetService("Players").LocalPlayer.PlayerGui.Main.MerchantShop.Visible and task.wait() and nullityExists() and Options.AutoFind.Value and wares.wares == nil do
-            humanoid.RootPart.Anchored = false
-            humanoid.RootPart.CFrame = CFrame.new(pos)
+        while task.wait() and nullityExists() and Options.AutoFind.Value and wares.wares == nil do
             fireproximityprompt(nullityRoot.ProximityPrompt) --caused initial crash, if future cash becomes issue reffer to here
             wares = getWares()
-            table.foreach(wares, print)
-            if wares.wares then table.foreach(wares.wares, print) end
+            if wares.wares then table.foreach(wares.wares, function(i,v) print("ware #"..tostring(i).." "..v.Name.." "..tostring(v.Stock).."x") end) end
         end
-        humanoid.RootPart.CFrame = cf
+        local totalwares = 0
         for i,v in pairs(wares.wares) do
             for i2=1, v.Stock, 1 do
+                totalwares = totalwares+1
                 game:GetService("ReplicatedStorage").Events.MerchantBuy:InvokeServer(i)
             end
         end
+        print(totalwares == 0 and "it was sold out" or "bought some stuff")
         if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] then return end
+        task.wait(1)--for asthetic reasons, you cannot tell that everythint was purchased
         getgenv().pauseAutoRejoin = false
     end)
 end
@@ -905,7 +902,6 @@ Options.AutoExecute:SetValue(true)
 --End Of Real Script
 
 Window:SelectTab(1)
-task.wait(3) --just wait, because otherwhise you might crash
 while game:GetService("Players").LocalPlayer.Character ==nil do
     task.wait()
 end
