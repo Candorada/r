@@ -623,11 +623,13 @@ getgenv().wcCon = wc.AttributeChanged:Connect(function(...)
     local wOver = false
     if getgenv().pauseAutoRejoin then
         if Options.AutoFind.Value and (nullityExists() and Options.AutoFind.Value) and not getgenv().nullityFound then 
+            getgenv().nullityFound = true
             onNullityFound()
         else
             nOver = true 
         end
         if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] and not getgenv().weatherFound then
+            getgenv().weatherFound = true
             onWeatherFound()  
         else
             wOver = true
