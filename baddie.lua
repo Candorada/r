@@ -200,12 +200,12 @@ function buyAll()
 end
 
 function nullityExists() 
-    SendMessage(u,"found nullity")
     local mq = game:GetService("ReplicatedStorage").Events.MerchantRequest
 
     function getWares() return mq:InvokeServer() end
 
     local wares = getWares()
+    SendMessage(u,tostring(wares))
     if #wares == 0 then return false end
     --return game:GetService("ReplicatedStorage").status.nullity_active
     return #game.Workspace:QueryDescendants("#Nullity") >= 1 and true or false
