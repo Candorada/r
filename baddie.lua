@@ -1,6 +1,3 @@
-repeat
-    task.wait()
-until game.IsLoaded ~= nil
 if not game:IsLoaded() then game.Loaded:Wait() end
 if game.PlaceId ~= 79305036070450 then return end
 
@@ -638,7 +635,7 @@ function onNullityFound()
             wares = getWares()
         end
         local totalwares = buywares()
-        while totalwares ~= 0 and task.wait() do totalwares = buywares() end
+        --while totalwares ~= 0 and task.wait() do totalwares = buywares() end
         print(totalwares == 0 and "it was sold out" or "bought some stuff")
         if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] then return end
         task.wait(1)--for asthetic reasons, you cannot tell that everythint was purchased
