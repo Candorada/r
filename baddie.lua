@@ -902,11 +902,11 @@ Options.AutoExecute:SetValue(true)
 --End Of Real Script
 
 Window:SelectTab(1)
+SaveManager:LoadAutoloadConfig()
 while game:GetService("Players").LocalPlayer.Character ==nil do
     task.wait()
 end
 game:GetService("Players").LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-SaveManager:LoadAutoloadConfig()
 getgenv().loadedBaddieScript = true
 Fluent:Notify({
     Title = "Fluent",
