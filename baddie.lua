@@ -1,6 +1,8 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 if game.PlaceId ~= 79305036070450 then return end
 
+
+local u = "https://discord.com/api/webhooks/1475302532992733285/4gqvbsfIHCJJYYod2h8dL5YjzW_j75oI4llFyW-J_NLWNqYcGfFp8rGcECYTw9dNItUz"
 local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/indev/"
 local TeleportService = game:GetService("TeleportService")
 function tp(place,job,plr)
@@ -9,7 +11,23 @@ function tp(place,job,plr)
     end)
     return success;
 end
-
+function SendMessage(url, message)
+    local http = game:GetService("HttpService")
+    local headers = {
+        ["Content-Type"] = "application/json"
+    }
+    local data = {
+        ["content"] = message
+    }
+    local body = http:JSONEncode(data)
+    local response = request({
+        Url = url,
+        Method = "POST",
+        Headers = headers,
+        Body = body
+    })
+    return response
+end
 getgenv().isTeleporting = getgenv().isTeleporting and true or false
 local randomRejoin;randomRejoin=function()
     if(getgenv().isTeleporting) then return end 
@@ -182,14 +200,15 @@ function buyAll()
 end
 
 function nullityExists() 
+    SendMessage(u,"found nullity")
     local mq = game:GetService("ReplicatedStorage").Events.MerchantRequest
 
     function getWares() return mq:InvokeServer() end
 
     local wares = getWares()
     if #wares == 0 then return false end
-    return game:GetService("ReplicatedStorage").status.nullity_active
-    --return #game.Workspace:QueryDescendants("#Nullity") >= 1 and true or false
+    --return game:GetService("ReplicatedStorage").status.nullity_active
+    return #game.Workspace:QueryDescendants("#Nullity") >= 1 and true or false
 end
 
 
