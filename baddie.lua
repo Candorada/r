@@ -616,6 +616,10 @@ function onNullityFound()
         function getWares() return mq:InvokeServer() end
         local wares = getWares()
         while task.wait() and nullityExists() and Options.AutoFind.Value and wares.wares == nil do
+            if getRoot() ~= nil then
+                getRoot().Anchored = false
+                getRoot().CFrame = CFrame.new(pos)
+            end
             fireproximityprompt(nullityRoot.ProximityPrompt) --caused initial crash, if future cash becomes issue reffer to here
             wares = getWares()
             if wares.wares then table.foreach(wares.wares, function(i,v) print("ware #"..tostring(i).." "..v.Name.." "..tostring(v.Stock).."x") end) end
