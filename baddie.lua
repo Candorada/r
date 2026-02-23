@@ -630,6 +630,7 @@ function onNullityFound()
                         game:GetService("ReplicatedStorage").Events.MerchantBuy:InvokeServer(i)
                     end
                 end
+                print("totalwares"..tostring(totalwares))
                 return totalwares
             end
             wares = getWares()
