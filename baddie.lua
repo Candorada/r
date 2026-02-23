@@ -622,6 +622,7 @@ function onNullityFound()
         end
         function buywares()
             if nullityExists() == false then return 0 end
+            local wares = getWares()
             if wares.wares ~= nil then
                 local totalwares = 0
                 for i,v in pairs(wares.wares) do
