@@ -600,13 +600,13 @@ function onNullityFound()
             humanoid.RootPart.Anchored = false
             task.wait()
         until not humanoid.RootPart.Anchored
-        --[[
+        
         game:GetService("Players").LocalPlayer.Character.Humanoid:MoveTo(pos)
         setConveyer(false)
         humanoid.MoveToFinished:Wait()
         setConveyer(true)
         task.wait(0.1)
-        --]]
+        
         while humanoid.RootPart.Anchored and task.wait()  do
             humanoid.RootPart.Anchored = false
         end -- repeat because idk why
@@ -619,6 +619,7 @@ function onNullityFound()
             humanoid.RootPart.CFrame = CFrame.new(pos)
             fireproximityprompt(nullityRoot.ProximityPrompt) --caused initial crash, if future cash becomes issue reffer to here
             wares = getWares()
+            table.foreach(wares, print)
             if wares.wares then table.foreach(wares.wares, print) end
         end
         humanoid.RootPart.CFrame = cf
