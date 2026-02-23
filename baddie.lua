@@ -634,7 +634,7 @@ function onNullityFound()
                 return totalwares
             end
             wares = getWares()
-        end --hello
+        end
         local totalwares = buywares()
         while totalwares ~= 0 and task.wait() do totalwares = buywares() end
         print(totalwares == 0 and "it was sold out" or "bought some stuff")
