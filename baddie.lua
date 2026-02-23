@@ -596,9 +596,10 @@ function onNullityFound()
         local char = game:GetService("Players").LocalPlayer.Character
         local humanoid = char.Humanoid
         local pos = nullityRoot.Position
-        while humanoid.RootPart.Anchored and task.wait()  do
+        repeat 
             humanoid.RootPart.Anchored = false
-        end
+            task.wait()
+        until not humanoid.RootPart.Anchored
         --[[
         game:GetService("Players").LocalPlayer.Character.Humanoid:MoveTo(pos)
         setConveyer(false)
@@ -610,14 +611,12 @@ function onNullityFound()
             humanoid.RootPart.Anchored = false
         end -- repeat because idk why
         local cf = humanoid.RootPart.CFrame
-        while (humanoid.RootPart.Position).Magnitude > 0.1 and task.wait() do
-            humanoid.RootPart.Anchored = false
-            humanoid.RootPart.CFrame = CFrame.new(pos)
-        end
         local mq = game:GetService("ReplicatedStorage").Events.MerchantRequest
         function getWares() return mq:InvokeServer() end
         local wares = getWares()
         while not game:GetService("Players").LocalPlayer.PlayerGui.Main.MerchantShop.Visible and task.wait() and nullityExists() and Options.AutoFind.Value and wares.wares == nil do
+            humanoid.RootPart.Anchored = false
+            humanoid.RootPart.CFrame = CFrame.new(pos)
             fireproximityprompt(nullityRoot.ProximityPrompt) --caused initial crash, if future cash becomes issue reffer to here
             wares = getWares()
             if wares.wares then table.foreach(wares.wares, print) end
@@ -901,6 +900,7 @@ Options.AutoExecute:SetValue(true)
 --End Of Real Script
 
 Window:SelectTab(1)
+task.wait(3) --just wait, because otherwhise you might crash
 while game:GetService("Players").LocalPlayer.Character ==nil do
     task.wait()
 end
