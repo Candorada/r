@@ -640,6 +640,7 @@ function onNullityFound()
         local totalwares = buywares()
         while totalwares ~= 0 and task.wait() do totalwares = buywares() end
         print(totalwares == 0 and "it was sold out" or "bought some stuff")
+        getgenv().nullityFound = false
         if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] then return end
         task.wait(1)--for asthetic reasons, you cannot tell that everythint was purchased
         getgenv().pauseAutoRejoin = false
@@ -651,15 +652,19 @@ getgenv().wcCon = wc.AttributeChanged:Connect(function(...)
     local nOver = false
     local wOver = false
     if getgenv().pauseAutoRejoin then
-        if Options.AutoFind.Value and nullityExists() and not getgenv().nullityFound then 
+        if Options.AutoFind.Value and nullityExists() then 
             getgenv().nullityFound = true
-            onNullityFound()
+            if not getgenv().nullityFound then
+                onNullityFound()
+            end
         else
             nOver = true 
         end
-        if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] and not getgenv().weatherFound then
+        if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] then
             getgenv().weatherFound = true
-            onWeatherFound()  
+            if not getgenv().weatherFound then
+                onWeatherFound() 
+            end
         else
             wOver = true
         end
