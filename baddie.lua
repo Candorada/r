@@ -2,7 +2,6 @@ if not game:IsLoaded() then game.Loaded:Wait() end
 if game.PlaceId ~= 79305036070450 then return end
 
 
-local u = "https://discord.com/api/webhooks/1475302532992733285/4gqvbsfIHCJJYYod2h8dL5YjzW_j75oI4llFyW-J_NLWNqYcGfFp8rGcECYTw9dNItUz"
 local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/indev/"
 local TeleportService = game:GetService("TeleportService")
 function tp(place,job,plr)
@@ -11,7 +10,7 @@ function tp(place,job,plr)
     end)
     return success;
 end
-function SendMessage(url, message)
+function sendMessage(url, message) --for future use, currently not used
     local http = game:GetService("HttpService")
     local headers = {
         ["Content-Type"] = "application/json"
@@ -200,13 +199,7 @@ function buyAll()
 end
 
 function nullityExists() 
-    local mq = game:GetService("ReplicatedStorage").Events.MerchantRequest
-
-    function getWares() return mq:InvokeServer() end
-
-    local wares = getWares()
-    SendMessage(u,tostring(wares))
-    if #wares == 0 then return false end
+    --if #wares == 0 then return false end
     --return game:GetService("ReplicatedStorage").status.nullity_active
     return #game.Workspace:QueryDescendants("#Nullity") >= 1 and true or false
 end
@@ -606,32 +599,36 @@ function onNullityFound()
         while humanoid.RootPart.Anchored and task.wait()  do
             humanoid.RootPart.Anchored = false
         end
+        --[[
         game:GetService("Players").LocalPlayer.Character.Humanoid:MoveTo(pos)
         setConveyer(false)
         humanoid.MoveToFinished:Wait()
         setConveyer(true)
         task.wait(0.1)
+        --]]
         while humanoid.RootPart.Anchored and task.wait()  do
             humanoid.RootPart.Anchored = false
         end -- repeat because idk why
-        while (humanoid.RootPart.Position-pos).Magnitude > 0.1 and task.wait() do
+        local cf = humanoid.RootPart.CFrame
+        while (humanoid.RootPart.Position).Magnitude > 0.1 and task.wait() do
             humanoid.RootPart.Anchored = false
             humanoid.RootPart.CFrame = CFrame.new(pos)
         end
-        while not game:GetService("Players").LocalPlayer.PlayerGui.Main.MerchantShop.Visible and task.wait() and nullityExists() and Options.AutoFind.Value do
+        local mq = game:GetService("ReplicatedStorage").Events.MerchantRequest
+        function getWares() return mq:InvokeServer() end
+        local wares = getWares()
+        while not game:GetService("Players").LocalPlayer.PlayerGui.Main.MerchantShop.Visible and task.wait() and nullityExists() and Options.AutoFind.Value and wares.wares == nil do
             fireproximityprompt(nullityRoot.ProximityPrompt) --caused initial crash, if future cash becomes issue reffer to here
+            wares = getWares()
+            if wares.wares then table.foreach(wares.wares, print) end
         end
-        task.wait(2) --likely optional
-        for i2=1, 15, 1 do
-            for i=1, 3, 1 do
-                if(nullityExists()) then
-                    game:GetService("ReplicatedStorage").Events.MerchantBuy:InvokeServer(i)
-                    task.wait(0.1)
-                end
+        humanoid.RootPart.CFrame = cf
+        for i,v in pairs(wares.wares) do
+            for i2=1, v.Stock, 1 do
+                game:GetService("ReplicatedStorage").Events.MerchantBuy:InvokeServer(i)
             end
         end
         if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] then return end
-        task.wait(3) --likely optional
         getgenv().pauseAutoRejoin = false
     end)
 end
