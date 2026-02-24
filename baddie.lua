@@ -574,8 +574,10 @@ function onWeatherFound()
         })
         local plrGUI = game:GetService("Players").LocalPlayer.PlayerGui
         --local btn = plrGUI:WaitForChild("loading"):WaitForChild("Frame"):WaitForChild("skipbutton")
-        local frame = plrGUI:WaitForChild("loading"):WaitForChild("Frame")
-        frame.BackgroundTransparency = 1
+        if plrGUI:FindFirstChild("loading")~=nil then
+            local frame = plrGUI:WaitForChild("loading"):WaitForChild("Frame")
+            frame.BackgroundTransparency = 1
+        end
         while getgenv().weatherFound and getgenv().pauseAutoRejoin and Options.AutoWeather.Value and task.wait(0.1) do spin() end
     end)
 end
@@ -591,7 +593,7 @@ function onNullityFound()
         })
         local plrGUI = game:GetService("Players").LocalPlayer.PlayerGui
         --local btn = plrGUI:WaitForChild("loading"):WaitForChild("Frame"):WaitForChild("skipbutton")
-        if plrGUI~=nil and plrGUI.loading~=nil then
+        if plrGUI~=nil and plrGUI:FindFirstChild("loading")~=nil then
             	local frame = plrGUI:WaitForChild("loading"):WaitForChild("Frame")
                 frame.BackgroundTransparency = 1
         end
