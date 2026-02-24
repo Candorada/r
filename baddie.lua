@@ -563,19 +563,21 @@ function setWeatherName()
 end
 
 function onWeatherFound()
-    getgenv().weatherFound = true
-    getgenv().pauseAutoRejoin = true
-    SaveManager:Save(SaveManager.Options.SaveManager_ConfigList.Value)
-    Fluent:Notify({
-        Title = "Weather Has Been Found",
-        Content = game:GetService("ReplicatedStorage"):WaitForChild("status"):GetAttribute("event"),
-        Duration = 2
-    })
-    local plrGUI = game:GetService("Players").LocalPlayer.PlayerGui
-    --local btn = plrGUI:WaitForChild("loading"):WaitForChild("Frame"):WaitForChild("skipbutton")
-    local frame = plrGUI:WaitForChild("loading"):WaitForChild("Frame")
-    frame.BackgroundTransparency = 1
-    while getgenv().pauseAutoRejoin and Options.AutoWeather.Value and task.wait(0.1) do spin() end
+    task.spawn(function()
+        getgenv().weatherFound = true
+        getgenv().pauseAutoRejoin = true
+        SaveManager:Save(SaveManager.Options.SaveManager_ConfigList.Value)
+        Fluent:Notify({
+            Title = "Weather Has Been Found",
+            Content = game:GetService("ReplicatedStorage"):WaitForChild("status"):GetAttribute("event"),
+            Duration = 2
+        })
+        local plrGUI = game:GetService("Players").LocalPlayer.PlayerGui
+        --local btn = plrGUI:WaitForChild("loading"):WaitForChild("Frame"):WaitForChild("skipbutton")
+        local frame = plrGUI:WaitForChild("loading"):WaitForChild("Frame")
+        frame.BackgroundTransparency = 1
+        while getgenv().weatherFound and getgenv().pauseAutoRejoin and Options.AutoWeather.Value and task.wait(0.1) do spin() end
+    end)
 end
 function onNullityFound()
     task.spawn(function()
@@ -663,6 +665,7 @@ getgenv().wcCon = wc.AttributeChanged:Connect(function(...)
                 onNullityFound()
             end
         else
+            getgenv().nullityFound = false
             nOver = true 
         end
         if Options.AutoWeather.Value and getWeather() ~= nil and Options.Events.Value[getWeather()] then
@@ -670,6 +673,7 @@ getgenv().wcCon = wc.AttributeChanged:Connect(function(...)
                 onWeatherFound() 
             end
         else
+            getgenv().weatherFound = false
             wOver = true
         end
     end
