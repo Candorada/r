@@ -745,6 +745,7 @@ local tgl = DiceMngmnt:AddToggle("AutoBuy", {Title = "Auto Buy All Dice", Defaul
 if(getgenv().buyallconnection) then getgenv().buyallconnection:Disconnect();getgenv().buyallconnection =nil end
 getgenv().buyallconnection=game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("top_not"):WaitForChild("Frame").ChildAdded:Connect(function()
 if Options.AutoBuy.Value then
+game:GetService("Players").LocalPlayer:SetAttribute("Loaded",true)
 buyAll()
 end
 end)
