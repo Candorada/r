@@ -916,9 +916,9 @@ function collectMoney()
         local plotModel = game:GetService("Workspace"):WaitForChild("Map"):WaitForChild("Plots"):WaitForChild(tostring(plot))
         for i,v in pairs(plotModel:WaitForChild("Slots"):QueryDescendants("Folder > #Touch")) do
             task.spawn(function()
-                firetouchinterest(v,root,true)
+                firetouchinterest(v,root,1)
                 task.wait()
-                firetouchinterest(v,root,false)
+                firetouchinterest(v,root,0)
             end)
         end
     end)
