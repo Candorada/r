@@ -893,8 +893,8 @@ end)
 local collect = Tabs.Main:AddSection("Collect", "list-x")
 function collectMoney()
     local success,err = pcall(function()
-        local plot = game:GetService("Players").LocalPlayer:WaitForChild("plot").Value
-        local root = game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").RootPart
+        local plot = game:GetService("Players").LocalPlayer.plot.Value
+        local root = game:GetService("Players").LocalPlayer.Character.Humanoid.RootPart
         local plotModel = game:GetService("Workspace"):WaitForChild("Map"):WaitForChild("Plots"):WaitForChild(tostring(plot))
         for i,v in pairs(plotModel:WaitForChild("Slots"):QueryDescendants("Folder > #Touch")) do
             task.spawn(function()
