@@ -4,9 +4,11 @@ function tp(place,job,plr)
         return TeleportService:TeleportToPlaceInstance(place, job , plr)
     end)
     return success;
-endgetgenv().isTeleporting = getgenv().isTeleporting and true or false 
-local randomRejoin;randomRejoin=function()
-    if(getgenv().isTeleporting) then return end 
+end
+
+getgenv().isTeleporting = getgenv().isTeleporting and true or false 
+local randomRejoin;randomRejoin=function(recursiveCall)
+    if(getgenv().isTeleporting and (recursiveCall ==nil or recursiveCall == false)) then return end 
     getgenv().isTeleporting = true
     local p = game:GetService("Players").LocalPlayer
     local http = game:GetService("HttpService")
@@ -30,7 +32,7 @@ local randomRejoin;randomRejoin=function()
         connect:Disconnect()
         connect = nil;
         task.wait(1)
-        randomRejoin()
+        randomRejoin(true)
     end)
     local json;
     if response.Success then
@@ -47,7 +49,7 @@ local randomRejoin;randomRejoin=function()
         if not tp(game.PlaceId,id , p) then
             if connect then connect:Disconnect(); connect = nil end
             task.wait(1)
-            randomRejoin()
+            randomRejoin(true)
         else
            if connect then connect:Disconnect(); connect = nil end --cleans up memory
         end
