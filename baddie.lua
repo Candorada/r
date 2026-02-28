@@ -52,6 +52,7 @@ local randomRejoin;randomRejoin=function()
     connect = TeleportService.TeleportInitFailed:Connect(function(player, result, errorMessage, placeId, jobId)
         getgenv().isTeleporting = false
         connect:Disconnect()
+        connect = nil;
         task.wait(1)
         randomRejoin()
     end)
@@ -364,7 +365,7 @@ Toggle:OnChanged(function()
 			end
 		end
 	else
-		if(workspace.Gravity == 0 and getgenv().g ~= null) then
+		if(workspace.Gravity == 0 and getgenv().g ~= nil) then
 			workspace.Gravity=getgenv().g
 		end
 		if getChar() and getChar():FindFirstChild("Humanoid") then
@@ -601,7 +602,7 @@ function onNullityFound()
         local nullityRoot = workspace.Nullity.Nullity:WaitForChild("HumanoidRootPart")
         local char = game:GetService("Players").LocalPlayer.Character
         local humanoid = char.Humanoid
-        local pos = nullityRoot.Position
+        local pos = nullityRoot.Position - Vector3.new(0,15,0)
         while humanoid.RootPart.Anchored and task.wait()  do
             humanoid.RootPart.Anchored = false
         end
@@ -618,6 +619,10 @@ function onNullityFound()
         while (humanoid.RootPart.Position-pos).Magnitude > 0.1 and task.wait() do
             humanoid.RootPart.Anchored = false
             humanoid.RootPart.CFrame = CFrame.new(pos)
+            if(workspace.Gravity ~= 0) then
+                getgenv().g = workspace.Gravity
+            end
+            workspace.Gravity = 0
         end
         local mq = game:GetService("ReplicatedStorage").Events.MerchantRequest
         function getWares() return mq:InvokeServer() end
@@ -631,6 +636,7 @@ function onNullityFound()
             wares = getWares()
             if wares.wares then table.foreach(wares.wares, function(i,v) print("ware #"..tostring(i).." "..v.Name.." "..tostring(v.Stock).."x") end) end
         end
+        workspace.Gravity = getgenv().g
         function buywares()
             if nullityExists() == false then return 0 end
             local wares = getWares()
