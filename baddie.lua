@@ -27,6 +27,15 @@ function sendMessage(url, message)
     return response
 end
 getgenv().isTeleporting = getgenv().isTeleporting and true or false
+local TeleportService = game:GetService("TeleportService")
+function tp(place,job,plr)
+    local success, errorMessage,rv = pcall(function()
+        return TeleportService:TeleportToPlaceInstance(place, job , plr)
+    end)
+    return success;
+end
+
+getgenv().isTeleporting = getgenv().isTeleporting and true or false 
 local randomRejoin;randomRejoin=function()
     if(getgenv().isTeleporting) then return end 
     getgenv().isTeleporting = true
@@ -69,6 +78,8 @@ local randomRejoin;randomRejoin=function()
     else
         local id = data[math.ceil(math.random()*#data)].id
         if not tp(game.PlaceId,id , p) then
+            if connect then connect:Disconnect(); connect = nil end
+            task.wait(1)
             randomRejoin()
         end
     end
