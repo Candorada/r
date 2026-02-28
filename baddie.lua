@@ -27,19 +27,12 @@ function sendMessage(url, message)
     return response
 end
 getgenv().isTeleporting = getgenv().isTeleporting and true or false
-local TeleportService = game:GetService("TeleportService")
-function tp(place,job,plr)
-    local success, errorMessage,rv = pcall(function()
-        return TeleportService:TeleportToPlaceInstance(place, job , plr)
-    end)
-    return success;
-end
-
-getgenv().isTeleporting = getgenv().isTeleporting and true or false 
 local randomRejoin;randomRejoin=function()
     if(getgenv().isTeleporting) then return end 
     getgenv().isTeleporting = true
     local p = game:GetService("Players").LocalPlayer
+    local to = Instance.new("TeleportOptions")
+
     local http = game:GetService("HttpService")
     local headers = {
         ["Content-Type"] = "application/json"
@@ -57,8 +50,8 @@ local randomRejoin;randomRejoin=function()
     })
     local connect;
     connect = TeleportService.TeleportInitFailed:Connect(function(player, result, errorMessage, placeId, jobId)
-        connect:Disconnect()
         getgenv().isTeleporting = false
+        connect:Disconnect()
         connect = nil;
         task.wait(1)
         randomRejoin()
@@ -76,18 +69,12 @@ local randomRejoin;randomRejoin=function()
     else
         local id = data[math.ceil(math.random()*#data)].id
         if not tp(game.PlaceId,id , p) then
-            if connect then connect:Disconnect(); connect = nil end
-            getgenv().isTeleporting = false
-            task.wait(1)
             randomRejoin()
-        else
-           if connect then connect:Disconnect(); connect = nil end --cleans up memory
         end
     end
     --connect:Disconnect()
     --https://games.roblox.com/v1/games/79305036070450/servers/Public?sortOrder=Desc&limit=100
 end
-
 
 if getgenv().antiKick then getgenv().antiKick:Disconnect(); getgenv().antiKick=nil end
 getgenv().antiKick = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
@@ -917,9 +904,9 @@ function collectMoney()
         local plotModel = game:GetService("Workspace"):WaitForChild("Map"):WaitForChild("Plots"):WaitForChild(tostring(plot))
         for i,v in pairs(plotModel:WaitForChild("Slots"):QueryDescendants("Folder > #Touch")) do
             task.spawn(function()
-                firetouchinterest(v,root,1)
+                firetouchinterest(v,root,true)
                 task.wait()
-                firetouchinterest(v,root,0)
+                firetouchinterest(v,root,false)
             end)
         end
     end)
