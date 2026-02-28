@@ -904,7 +904,7 @@ function collectMoney()
             end)
         end
     end)
-    print(success and "collect failed, you dont have a plot" or "collect success")
+    print(success and "collect success" or "collect failed, you dont have a plot")
 end
 collect:AddButton({
     Title = "Collect Cash",
