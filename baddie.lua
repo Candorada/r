@@ -79,11 +79,14 @@ local randomRejoin;randomRejoin=function()
             if connect then connect:Disconnect(); connect = nil end
             task.wait(1)
             randomRejoin()
+        else
+           if connect then connect:Disconnect(); connect = nil end --cleans up memory
         end
     end
     --connect:Disconnect()
     --https://games.roblox.com/v1/games/79305036070450/servers/Public?sortOrder=Desc&limit=100
 end
+
 
 if getgenv().antiKick then getgenv().antiKick:Disconnect(); getgenv().antiKick=nil end
 getgenv().antiKick = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
