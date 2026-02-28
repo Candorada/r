@@ -27,12 +27,19 @@ function sendMessage(url, message)
     return response
 end
 getgenv().isTeleporting = getgenv().isTeleporting and true or false
+local TeleportService = game:GetService("TeleportService")
+function tp(place,job,plr)
+    local success, errorMessage,rv = pcall(function()
+        return TeleportService:TeleportToPlaceInstance(place, job , plr)
+    end)
+    return success;
+end
+
+getgenv().isTeleporting = getgenv().isTeleporting and true or false 
 local randomRejoin;randomRejoin=function()
     if(getgenv().isTeleporting) then return end 
     getgenv().isTeleporting = true
     local p = game:GetService("Players").LocalPlayer
-    local to = Instance.new("TeleportOptions")
-
     local http = game:GetService("HttpService")
     local headers = {
         ["Content-Type"] = "application/json"
@@ -50,7 +57,7 @@ local randomRejoin;randomRejoin=function()
     })
     local connect;
     connect = TeleportService.TeleportInitFailed:Connect(function(player, result, errorMessage, placeId, jobId)
-        getgenv().isTeleporting = false
+        --getgenv().isTeleporting = false --this should stay away since randomrejoin down there will automatically set it as true again
         connect:Disconnect()
         connect = nil;
         task.wait(1)
@@ -69,12 +76,17 @@ local randomRejoin;randomRejoin=function()
     else
         local id = data[math.ceil(math.random()*#data)].id
         if not tp(game.PlaceId,id , p) then
+            if connect then connect:Disconnect(); connect = nil end
+            task.wait(1)
             randomRejoin()
+        else
+           if connect then connect:Disconnect(); connect = nil end --cleans up memory
         end
     end
     --connect:Disconnect()
     --https://games.roblox.com/v1/games/79305036070450/servers/Public?sortOrder=Desc&limit=100
 end
+
 
 if getgenv().antiKick then getgenv().antiKick:Disconnect(); getgenv().antiKick=nil end
 getgenv().antiKick = game.CoreGui.RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(c)
@@ -602,7 +614,7 @@ function onNullityFound()
         local nullityRoot = workspace.Nullity.Nullity:WaitForChild("HumanoidRootPart")
         local char = game:GetService("Players").LocalPlayer.Character
         local humanoid = char.Humanoid
-        local pos = nullityRoot.Position
+        local pos = nullityRoot.Position - Vector3.new(0,15,0)
         while humanoid.RootPart.Anchored and task.wait()  do
             humanoid.RootPart.Anchored = false
         end
@@ -619,6 +631,10 @@ function onNullityFound()
         while (humanoid.RootPart.Position-pos).Magnitude > 0.1 and task.wait() do
             humanoid.RootPart.Anchored = false
             humanoid.RootPart.CFrame = CFrame.new(pos)
+            if(workspace.Gravity ~= 0) then
+                getgenv().g = workspace.Gravity
+            end
+            workspace.Gravity = 0
         end
         local mq = game:GetService("ReplicatedStorage").Events.MerchantRequest
         function getWares() return mq:InvokeServer() end
@@ -632,6 +648,7 @@ function onNullityFound()
             wares = getWares()
             if wares.wares then table.foreach(wares.wares, function(i,v) print("ware #"..tostring(i).." "..v.Name.." "..tostring(v.Stock).."x") end) end
         end
+        workspace.Gravity = getgenv().g
         function buywares()
             if nullityExists() == false then return 0 end
             local wares = getWares()
