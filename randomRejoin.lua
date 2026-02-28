@@ -4,20 +4,16 @@ function tp(place,job,plr)
         return TeleportService:TeleportToPlaceInstance(place, job , plr)
     end)
     return success;
-end
-
-getgenv().isTeleporting = getgenv().isTeleporting and true or false
+endgetgenv().isTeleporting = getgenv().isTeleporting and true or false 
 local randomRejoin;randomRejoin=function()
-    if(getgenv().isTeleporting and not game:IsLoaded()) then return end 
+    if(getgenv().isTeleporting) then return end 
     getgenv().isTeleporting = true
     local p = game:GetService("Players").LocalPlayer
-    local to = Instance.new("TeleportOptions")
-
     local http = game:GetService("HttpService")
     local headers = {
         ["Content-Type"] = "application/json"
     }
-    local data = {
+    local data = { 
         ["content"] = message
     }
     local body = http:JSONEncode(data)
@@ -30,8 +26,9 @@ local randomRejoin;randomRejoin=function()
     })
     local connect;
     connect = TeleportService.TeleportInitFailed:Connect(function(player, result, errorMessage, placeId, jobId)
-        getgenv().isTeleporting = false
+        --getgenv().isTeleporting = false --this should stay away since randomrejoin down there will automatically set it as true again
         connect:Disconnect()
+        connect = nil;
         task.wait(1)
         randomRejoin()
     end)
@@ -48,7 +45,11 @@ local randomRejoin;randomRejoin=function()
     else
         local id = data[math.ceil(math.random()*#data)].id
         if not tp(game.PlaceId,id , p) then
+            if connect then connect:Disconnect(); connect = nil end
+            task.wait(1)
             randomRejoin()
+        else
+           if connect then connect:Disconnect(); connect = nil end --cleans up memory
         end
     end
     --connect:Disconnect()
