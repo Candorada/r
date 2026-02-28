@@ -40,8 +40,6 @@ local randomRejoin;randomRejoin=function()
     if(getgenv().isTeleporting) then return end 
     getgenv().isTeleporting = true
     local p = game:GetService("Players").LocalPlayer
-    local to = Instance.new("TeleportOptions")
-
     local http = game:GetService("HttpService")
     local headers = {
         ["Content-Type"] = "application/json"
