@@ -179,6 +179,7 @@ end
 
 function buyAll()
     repeat task.wait() until game:GetService("Players").LocalPlayer
+    game:GetService("Players").LocalPlayer:SetAttribute("Loaded",true)
     local s = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("RestockScript")
     local senv = getsenv(s)
     repeat task.wait() until senv._G.Profile
@@ -745,7 +746,6 @@ local tgl = DiceMngmnt:AddToggle("AutoBuy", {Title = "Auto Buy All Dice", Defaul
 if(getgenv().buyallconnection) then getgenv().buyallconnection:Disconnect();getgenv().buyallconnection =nil end
 getgenv().buyallconnection=game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("top_not"):WaitForChild("Frame").ChildAdded:Connect(function()
 if Options.AutoBuy.Value then
-game:GetService("Players").LocalPlayer:SetAttribute("Loaded",true)
 buyAll()
 end
 end)
