@@ -36,8 +36,8 @@ function tp(place,job,plr)
 end
 
 getgenv().isTeleporting = getgenv().isTeleporting and true or false 
-local randomRejoin;randomRejoin=function(recursiveCall)
-    if(getgenv().isTeleporting and (recursiveCall ==nil or recursiveCall == false)) then return end 
+local randomRejoin;randomRejoin=function()
+    if(getgenv().isTeleporting) then return end 
     getgenv().isTeleporting = true
     local p = game:GetService("Players").LocalPlayer
     local http = game:GetService("HttpService")
@@ -57,11 +57,11 @@ local randomRejoin;randomRejoin=function(recursiveCall)
     })
     local connect;
     connect = TeleportService.TeleportInitFailed:Connect(function(player, result, errorMessage, placeId, jobId)
-        --getgenv().isTeleporting = false --this should stay away since randomrejoin down there will automatically set it as true again
         connect:Disconnect()
         connect = nil;
         task.wait(1)
-        randomRejoin(true)
+        getgenv().isTeleporting = false
+        randomRejoin()
     end)
     local json;
     if response.Success then
@@ -78,7 +78,7 @@ local randomRejoin;randomRejoin=function(recursiveCall)
         if not tp(game.PlaceId,id , p) then
             if connect then connect:Disconnect(); connect = nil end
             task.wait(1)
-            randomRejoin(true)
+            randomRejoin()
         else
            if connect then connect:Disconnect(); connect = nil end --cleans up memory
         end
