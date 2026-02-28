@@ -890,8 +890,30 @@ Toggle:OnChanged(function(value)
     task.spawn(deleteAllBaddies,tonumber(Options.sellThreshold.Value))    
     end
 end)
-
-
+local collect = Tabs.Main:AddSection("Collect", "list-x")
+function collectMoney()
+    local plot = game:GetService("Players").LocalPlayer:WaitForChild("plot").Value
+    local root = game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").RootPart
+    local plotModel = game:GetService("Workspace"):WaitForChild("Map"):WaitForChild("Plots"):WaitForChild(tostring(plot))
+    for i,v in pairs(plotModel:WaitForChild("Slots"):QueryDescendants("Folder > #Touch")) do
+        task.spawn(function()
+            firetouchinterest(v,root,true)
+            task.wait()
+            firetouchinterest(v,root,false)
+        end)
+    end
+end
+collect:AddButton({
+    Title = "Collect Cash",
+    Description = "Collects all cash from baddies",
+    Callback = collectMoney
+})
+local Toggle = collect:AddToggle("AutoCollect", {Title = "Auto Collect", Default = false })
+Toggle:OnChanged(function()
+    getgenv().AutoCollecting = Options.AutoCollect.Value
+    if getgenv().AutoCollecting then collectMoney() end
+    while getgenv().AutoCollecting and task.wait(10) do collectMoney() end
+end)
 local Section = Tabs.Main:AddSection("General", "message-circle") -- Create section with icon
 Section:AddButton({
         Title = "Discord Link",
