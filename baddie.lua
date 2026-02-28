@@ -58,9 +58,9 @@ local randomRejoin;randomRejoin=function()
     local connect;
     connect = TeleportService.TeleportInitFailed:Connect(function(player, result, errorMessage, placeId, jobId)
         connect:Disconnect()
+        getgenv().isTeleporting = false
         connect = nil;
         task.wait(1)
-        getgenv().isTeleporting = false
         randomRejoin()
     end)
     local json;
@@ -77,6 +77,7 @@ local randomRejoin;randomRejoin=function()
         local id = data[math.ceil(math.random()*#data)].id
         if not tp(game.PlaceId,id , p) then
             if connect then connect:Disconnect(); connect = nil end
+            getgenv().isTeleporting = false
             task.wait(1)
             randomRejoin()
         else
