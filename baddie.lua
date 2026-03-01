@@ -2,6 +2,13 @@ if not game:IsLoaded() then game.Loaded:Wait() end
 if game.PlaceId ~= 79305036070450 then return end
 
 local root = "https://raw.githubusercontent.com/Candorada/r/refs/heads/indev/"
+
+pcall(function()
+    local get =nil; 
+    repeat get = game:HttpGet(root.."loadblocker.lua") until typeof(get) =="string";
+    loadstring(get)()
+end)
+
 local TeleportService = game:GetService("TeleportService")
 function tp(place,job,plr)
     local success, errorMessage,rv = pcall(function()
