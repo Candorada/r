@@ -2,6 +2,8 @@
 --locally it will count down, but on rejon the UI will correct itself. 
 if not game:IsLoaded() then game.Loaded:Wait() end
 if game.PlaceId ~= 79305036070450 then return end
+if getgenv().loadBlocked then return end
+getgenv().loadBlocked = true;
 --game:GetService("RunService"):Set3dRenderingEnabled(false)
 local REPLICATED_STORAGE = cloneref(game:GetService("ReplicatedStorage"));
 local SayMessageRequest = REPLICATED_STORAGE.Events.start_game;
