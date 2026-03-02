@@ -480,6 +480,28 @@ Toggle:OnChanged(function()
 end)
 Options.AutoFind:SetValue(false)
 
+local Toggle = DiceMngmnt:AddToggle("AutoSpin", {Title = "Auto Spin Your Dice (fast)",Description = "Automatically spin your dice (Auto Weather already does this, this option spins reguardless of weather)", Default = false })
+getgenv().AutoSpinSetting = getgenv().AutoSpinSetting and true or false
+
+Toggle:OnChanged(function()
+    getgenv().AutoSpinSetting = Options.AutoSpin.Value
+    if getgenv().AutoSpinSetting ==false then return end
+    task.spawn(function()
+        while getgenv().AutoSpinSetting do
+            spn = {success = false}
+            repeat
+                task.wait(0.1)
+                task.spawn(function(spn) getgenv().spn = spin(); end,spn )
+                --print("ye")
+            until not getgenv().AutoSpinSetting or (getgenv().spn and getgenv().spn.success)
+            --print("spun success")
+            task.wait(0.5)
+        end
+    end)
+end)
+Options.AutoSpin:SetValue(false)
+
+
 function numberToString(n)
     local numbers = {[3] = "K",[6] = "M",[9] = "B",[12] = "T",[15] = "Qd",[18] = "Qn",[21] = "Sx",}
     local n2 = math.floor(math.log10(n)/3)*3
