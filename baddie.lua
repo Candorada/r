@@ -186,8 +186,6 @@ function buyEgg(name,count)
 end
 
 function buyAll()
-    repeat task.wait() until game:GetService("Players").LocalPlayer and game:GetService("Players").LocalPlayer.leaderstats and game:GetService("Players").LocalPlayer.leaderstats:GetChildren()[1]
-    game:GetService("Players").LocalPlayer:SetAttribute("Loaded",true)
     local s = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("RestockScript")
     local senv = getsenv(s)
     repeat task.wait() until senv._G.Profile
@@ -776,6 +774,9 @@ Toggle:OnChanged(function()
     end
 end)
 Options.AutoWeather:SetValue(false)
+--2 lines bellow enshure the game loads
+repeat task.wait() until game:GetService("Players").LocalPlayer and game:GetService("Players").LocalPlayer.leaderstats and game:GetService("Players").LocalPlayer.leaderstats:GetChildren()[1]
+game:GetService("Players").LocalPlayer:SetAttribute("Loaded",true)
 
 local tgl = DiceMngmnt:AddToggle("AutoBuy", {Title = "Auto Buy All Dice", Default = false })
 if(getgenv().buyallconnection) then getgenv().buyallconnection:Disconnect();getgenv().buyallconnection =nil end
