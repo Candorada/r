@@ -775,7 +775,7 @@ Toggle:OnChanged(function()
 end)
 Options.AutoWeather:SetValue(false)
 --2 lines bellow enshure the game loads
-repeat task.wait() until game:GetService("Players").LocalPlayer and game:GetService("Players").LocalPlayer:FindFirstChild("leaderstats") and game:GetService("Players").LocalPlayer.leaderstats:GetChildren()[1]
+repeat task.wait() until (game:GetService("Players").LocalPlayer and game:GetService("Players").LocalPlayer:FindFirstChild("leaderstats") and game:GetService("Players").LocalPlayer:FindFirstChild("leaderstats"):GetChildren()[1])
 game:GetService("Players").LocalPlayer:SetAttribute("Loaded",true)
 
 local tgl = DiceMngmnt:AddToggle("AutoBuy", {Title = "Auto Buy All Dice", Default = false })
