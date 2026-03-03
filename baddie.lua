@@ -778,6 +778,12 @@ Options.AutoWeather:SetValue(false)
 repeat task.wait() until game:GetService("Players").LocalPlayer
 game:GetService("Players").LocalPlayer:SetAttribute("Loaded",true)
 
+local s = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("RestockScript")
+local senv = getsenv(s)
+repeat task.wait() until senv._G.Profile
+local PROFILE = senv._G.Profile
+
+
 local tgl = DiceMngmnt:AddToggle("AutoBuy", {Title = "Auto Buy All Dice", Default = false })
 if(getgenv().buyallconnection) then getgenv().buyallconnection:Disconnect();getgenv().buyallconnection =nil end
 getgenv().buyallconnection=game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("top_not"):WaitForChild("Frame").ChildAdded:Connect(function()
