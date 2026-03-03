@@ -775,12 +775,7 @@ Toggle:OnChanged(function()
 end)
 Options.AutoWeather:SetValue(false)
 
---7 lines bellow enshure the game loads
-    local s = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("RestockScript")
-    local senv = getsenv(s)
-    repeat task.wait() until senv._G.Profile
-    local PROFILE = senv._G.Profile
-
+--2 lines bellow enshure the game loads
     repeat task.wait() until game:GetService("Players").LocalPlayer
     game:GetService("Players").LocalPlayer:SetAttribute("Loaded",true)
 --
