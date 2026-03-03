@@ -186,7 +186,7 @@ function buyEgg(name,count)
 end
 
 function buyAll()
-    repeat task.wait() until game:GetService("Players").LocalPlayer
+    repeat task.wait() until game:GetService("Players").LocalPlayer and game:GetService("Players").LocalPlayer.leaderstats
     game:GetService("Players").LocalPlayer:SetAttribute("Loaded",true)
     local s = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("RestockScript")
     local senv = getsenv(s)
