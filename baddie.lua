@@ -663,7 +663,12 @@ function onNullityFound()
             wares = getWares()
             if wares.wares then table.foreach(wares.wares, function(i,v) print("ware #"..tostring(i).." "..v.Name.." "..tostring(v.Stock).."x") end) end
         end
+        local s = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main"):WaitForChild("RestockScript")
+        local senv = getsenv(s)
+        repeat task.wait() until senv._G.Profile
+        local PROFILE = senv._G.Profile
         workspace.Gravity = getgenv().g
+        local diceData = require(game:GetService("ReplicatedStorage").Modules.DiceData)
         function buywares()
             if nullityExists() == false then return 0 end
             local wares = getWares()
@@ -671,9 +676,12 @@ function onNullityFound()
                 local totalwares = 0
                 for i,v in pairs(wares.wares) do
                     for i2=1, v.Stock, 1 do
-                        if Options.AutoBuy.Value ==false then return 0 end
-                        totalwares = totalwares+1
-                        game:GetService("ReplicatedStorage").Events.MerchantBuy:InvokeServer(i)
+                        local rebirth = diceData[v.Name].RebirthsRequired and diceData[v.Name].RebirthsRequired or 0
+                        if rebirth <= PROFILE.Data.Rebirths then
+                            if Options.AutoFind.Value == false then return 0 end
+                            totalwares = totalwares+1
+                            game:GetService("ReplicatedStorage").Events.MerchantBuy:InvokeServer(i)
+                        end
                     end
                 end
                 print("totalwares"..tostring(totalwares))
