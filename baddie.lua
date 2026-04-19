@@ -488,12 +488,12 @@ Toggle:OnChanged(function()
         while getgenv().AutoSpinSetting do
             spn = {success = false}
             repeat
-                task.wait(0.1)
                 task.spawn(function(spn) getgenv().spn = spin(); end,spn )
+                task.wait(0.1)
                 --print("ye")
             until not getgenv().AutoSpinSetting or (getgenv().spn and getgenv().spn.success)
             --print("spun success")
-            task.wait(0.5)
+            task.wait(0.5/(1+0.5)) --roll speed math, just for me tbh
         end
     end)
 end)
