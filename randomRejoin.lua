@@ -8,7 +8,7 @@ end
 
 getgenv().isTeleporting = getgenv().isTeleporting and true or false
 local randomRejoin;randomRejoin=function()
-    if(getgenv().isTeleporting and not game:IsLoaded()) then return end 
+    if(getgenv().isTeleporting) then return end 
     getgenv().isTeleporting = true
     local p = game:GetService("Players").LocalPlayer
     local to = Instance.new("TeleportOptions")
@@ -17,7 +17,7 @@ local randomRejoin;randomRejoin=function()
     local headers = {
         ["Content-Type"] = "application/json"
     }
-    local data = {
+    local data = { 
         ["content"] = message
     }
     local body = http:JSONEncode(data)
@@ -32,6 +32,7 @@ local randomRejoin;randomRejoin=function()
     connect = TeleportService.TeleportInitFailed:Connect(function(player, result, errorMessage, placeId, jobId)
         getgenv().isTeleporting = false
         connect:Disconnect()
+        connect = nil;
         task.wait(1)
         randomRejoin()
     end)
